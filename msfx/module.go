@@ -9,11 +9,10 @@ import (
 // FX Module.
 //
 // Requires:
-// - *msconfig.HTTPSettings
+// - *msconfig.HTTPSetings
 //
 // Provides:
-// - msconfig.RoundTripWrapFn `group:"round_trip_wraps"`
-// - ms.PathNormalizer
+// - xhttp.RoundTripWrapFn `name:"self_identity"`
 var Module = fx.Module("ms", ModuleOptions...)
 
 var ModuleOptions = []fx.Option{

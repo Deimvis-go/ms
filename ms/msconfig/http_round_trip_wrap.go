@@ -2,14 +2,13 @@ package msconfig
 
 import (
 	"net/http"
+
+	"github.com/Deimvis/go-ext/go1.25/xhttp"
 )
 
-type RoundTripFn func(*http.Request) (*http.Response, error)
-type RoundTripWrapFn func(RoundTripFn) RoundTripFn
-
-func NewRoundTripWrap(cfg *HTTPRequests) RoundTripWrapFn {
+func NewRoundTripWrap(cfg *HTTPRequests) xhttp.RoundTripWrapFn {
 	h := cfg.Headers
-	return func(fn RoundTripFn) RoundTripFn {
+	return func(fn xhttp.RoundTripFn) xhttp.RoundTripFn {
 		return func(req *http.Request) (*http.Response, error) {
 			if h.XClientHost != nil {
 				req.Header.Set(XClientHost, h.XClientCloudService.Value())

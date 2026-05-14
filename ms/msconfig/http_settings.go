@@ -3,6 +3,9 @@ package msconfig
 import (
 	"fmt"
 	"os"
+
+	"github.com/Deimvis/go-ext/go1.25/ext"
+	"github.com/Deimvis/go-ext/go1.25/xptr"
 )
 
 type HTTPSettings struct {
@@ -57,8 +60,7 @@ func (hv *HTTPRequestHeaderValue) invalidateCache() {
 	if hv.Const != nil {
 		hv.cachedValue = hv.Const
 	} else if hv.Env != nil {
-		v := os.Getenv(*hv.Env)
-		hv.cachedValue = &v
+		hv.cachedValue = xptr.T(os.Getenv(*hv.Env))
 	}
 
 	if hv.cachedValue == nil {
@@ -68,14 +70,9 @@ func (hv *HTTPRequestHeaderValue) invalidateCache() {
 
 func (hv *HTTPRequestHeaderValue) ValidateSelf() error {
 	vsOpts := []*string{hv.Const, hv.Env}
-	set := 0
-	for _, v := range vsOpts {
-		if v != nil {
-			set++
-		}
-	}
-	if set != 1 {
-		return fmt.Errorf("exactly one option should be specified, but %d given (%v)", set, vsOpts)
+	vs := ext.Filter(vsOpts, func(v *string) bool { return v != nil })
+	if len(vs) != 1 {
+		return fmt.Errorf("exactly one option should be specified, but %d given (%v)", len(vs), vsOpts)
 	}
 	return nil
 }
